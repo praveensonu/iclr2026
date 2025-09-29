@@ -32,12 +32,12 @@ python eval.py
 
 ### Unlearn
 
-There are overall 40 experiments just with Gradient difference. The datasets used for the experiments can be found in the `/data` folder. There are two Config classes in the ```config.py```. `Config` for **WPU** and `Config2` for **Mix** datasets. Based on your experiments, please select the right Config Class. 
+There are overall 40 experiments just with Gradient difference. The datasets used for the experiments can be found in the `/data` folder. There are two Config classes in the ```config.py```. `Config` for **WPU** and `Config2` for **Mix** datasets. Based on your experiments, please select the right Config Class and. 
 
 
 ```bash
 Step 1: Update the self.loss_type and exp_type in Config Class of config.py to gd
-Step 2: Select the retain dataset path (grand, moderate, etc).
+Step 2: Select the retain dataset type (mod_5, etc) and update the self.retain_path in the class
 Step 3: Select the appropriate epochs from the paper (In the Appendix, Table:4) for the experiment.
 Step 4: Please check if the model_id path is correct (finetuned version WPU/Mix).
 Step 5: Change the config line code in the gd.py file (line 21, cfg = Config() for WPU, cfg = Config2() for Mix).

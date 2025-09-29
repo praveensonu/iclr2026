@@ -20,7 +20,7 @@ class Config:
         self.save_dir       = f'outputs/{self.loss_type}_{self.exp_type}_model' 
         self.retriever_model= 'thenlper/gte-small'
         self.forget_path    = './data/wpu_data/forget_1.csv' 
-        self.retain_path    = './data/wpu_data/semantic/semantic_top5.csv'
+        self.retain_path    = './data/wpu_data/semantic/semantic_5.csv' #change this path
         self.retain_full    = './data/wpu_data/retain_100.csv'
         self.npo_beta       = 0.1
         self.npo_retain_alpha = 1.0

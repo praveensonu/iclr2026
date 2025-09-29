@@ -79,8 +79,6 @@ retain['truth'] = None
 df = pd.concat([forget, retain], axis=0)
 df.to_csv(f'./results/datasets/{cfg.loss_type}_{cfg.exp_type}.csv', index = False) 
 
-
-
 metrics = [
     ("FE",      fe.item()),
     ("MU",   mu.item()),

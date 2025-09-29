@@ -55,3 +55,21 @@ Without changing anything in the config, please follow the next steps for the ev
 Step 1: Update line 23 in eval.py file based on the dataset (cfg = Config() for WPU, cfg = Config2() for Mix).
 python eval.py
 ```
+
+
+The above experiments can be reproduced on **multiple GPUs** too (except the evaluation). 
+
+```bash
+Step 1: Comment the os.environ['CUDA_VISIBLE_DEVICES'] = '1' in the files (finetune, gd). Lets say we do gd.py here
+export CUDA_VISIBLE_DEVICES=0,1 
+accelerate launch --multi_gpu --num_processes 2 gd.py
+```
+
+The code for **Coresets** selection is in the notebook, however reproducing that code requires extra steps (such as warmup runs for GRAND, semantic & syntactic calculation etc). Running the notebooks is not enough, it requires changes in the Config classes and doing the warmups for GRAND, calculating semantic and syntactic scores with sentence transformers model and edit distance etc. We already provide the selected coresets in the data folder for convenience. 
+
+
+
+### Hyperparameter optimization 
+
+For our experiments we actually used `gd_hpo.py` file for hyperparameter optimization, however this is extrememly time consuming. We suggest to use the epochs Table from the Paper and just run `gd.py` file. If you'd like to run the `gd_hpo.py`, please update the Config line and also update the **num_epochs** on line 69 in the file. Then you can use either multi-gpu or single gpu set up.
+

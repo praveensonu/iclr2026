@@ -11,61 +11,15 @@ from accelerate import Accelerator
 from typing import List, Tuple
 from collections import Counter
 import math
-from syntactic_sim import syntactic_similarity, init_syntax
-import stanza
 warnings.filterwarnings("ignore")
 
 accelerator = Accelerator()
-
-stanza.download('en')
-init_syntax(lang='en', use_gpu=True, batch_size=64)
-
-
-# --------- Syntactic Similarity ---------
-
-
-
-# --------- Token Diversity ---------
-def get_token_distribution(text):
-    tokens = text.split()
-    total = len(tokens)
-    counts = Counter(tokens)
-    return {token: count/total for token, count in counts.items()} if total > 0 else {}
-
-def kl_divergence(p, q, eps=1e-10):
-    all_tokens = set(p.keys()).union(set(q.keys()))
-    div = 0.0
-    for token in all_tokens:
-        p_prob = p.get(token, 0) + eps
-        q_prob = q.get(token, 0) + eps
-        div += p_prob * math.log(p_prob / q_prob)
-    return div
-
-def js_divergence(p, q, eps=1e-10, normalize=True):
-    all_tokens = set(p.keys()).union(set(q.keys()))
-    
-    # Build M distribution
-    m = {token: 0.5 * (p.get(token, 0) + q.get(token, 0)) for token in all_tokens}
-    
-    js = 0.5 * kl_divergence(p, m, eps) + 0.5 * kl_divergence(q, m, eps)
-    
-    # Normalize to [0,1] if using natural log
-    if normalize:
-        js /= math.log(2)  # now bounded in [0,1]
-    return js
-
-def get_js_scores(p, q):
-    p = get_token_distribution(p)
-    q = get_token_distribution(q)
-    return js_divergence(p, q)
-
 
 def eval_rouge_recall(gen_outputs, ground_truths):
     scorer = rouge_scorer.RougeScorer(['rouge1', 'rougeL'], use_stemmer=True)
     rouge_scores = scorer.score(gen_outputs, ground_truths)
 
     return rouge_scores['rouge1'].recall, rouge_scores['rougeL'].recall
-
 
 
 def eval_cosine_similarity_batched(gen_outputs: List[str], ground_truths: List[str], model: SentenceTransformer, batch_size: int = 32):
@@ -87,7 +41,6 @@ def eval_cosine_similarity_batched(gen_outputs: List[str], ground_truths: List[s
         )
         pairwise_scores = torch.diag(util.cos_sim(gen_embeddings, gt_embeddings))
         return torch.clamp(pairwise_scores, min=0).tolist()
-
 
 
 @torch.no_grad()
